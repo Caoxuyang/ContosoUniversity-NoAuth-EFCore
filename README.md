@@ -1,85 +1,77 @@
-# Contoso University - .NET Framework 4.8.2 with Windows Authentication
+# Contoso University - .NET 9.0 with ASP.NET Core
 
-This project is a refactored version of the Contoso University sample application, converted from ASP.NET Core to ASP.NET MVC 5 targeting .NET Framework 4.8.2 with Windows Authentication enabled.
+This project is the Contoso University sample application built with ASP.NET Core targeting .NET 9.0, using Entity Framework Core for data access.
 
-## Key Changes Made
+## Framework
+
+- **Runtime**: .NET 9.0
+- **Web Framework**: ASP.NET Core (MVC)
+- **ORM**: Entity Framework Core 9.0
+- **Database**: SQL Server (LocalDB for development)
+
+## Key Changes from .NET Framework 4.8
 
 ### 1. Framework Migration
-- **From**: ASP.NET Core 2.2 (.NET Core)
-- **To**: ASP.NET MVC 5 (.NET Framework 4.8.2)
+- **From**: ASP.NET MVC 5 (.NET Framework 4.8.2)
+- **To**: ASP.NET Core (.NET 9.0)
 
-### 2. Authentication
-- **Windows Authentication**: Enabled in `Web.config`
-- **Authorization**: All controllers require authentication (configured in `FilterConfig.cs`)
-- **Anonymous Access**: Disabled by default
+### 2. Configuration
+- **From**: `Web.config` with `<appSettings>` and `<connectionStrings>`
+- **To**: `appsettings.json` with the ASP.NET Core configuration system
 
 ### 3. Entity Framework Migration
-- **From**: Entity Framework Core
-- **To**: Entity Framework 6.4.4
-- **Database Context**: Updated to use EF6 syntax
-- **Connection String**: Updated for .NET Framework
+- **From**: Entity Framework 6
+- **To**: Entity Framework Core 9.0
+- **Database Context**: Updated to use EF Core syntax with async operations
 
-### 4. Project Structure
+### 4. Application Startup
+- **From**: `Global.asax` + `App_Start/` folder
+- **To**: `Program.cs` using the minimal hosting model
+
+### 5. Project Structure
 ```
 ContosoUniversity/
-├── App_Start/              # Application startup configuration
-├── Controllers/            # MVC Controllers
-├── Data/                   # Entity Framework context and initializer
-├── Models/                 # Data models and view models
-├── Views/                  # Razor views
-├── Content/                # CSS and other content
-├── Scripts/                # JavaScript files
-├── Properties/             # Assembly properties
-├── Global.asax             # Application global events
-├── Web.config              # Configuration file
-└── packages.config         # NuGet packages
+ Controllers/            # ASP.NET Core MVC Controllers
+ Data/                   # EF Core DbContext and initializer
+ Models/                 # Data models and view models
+ Views/                  # Razor views
+ wwwroot/                # Static files (CSS, JS, images)
+ Properties/             # Launch settings
+ Program.cs              # Application entry point and startup
+ appsettings.json        # Application configuration
+ ContosoUniversity.csproj
 ```
 
-## Authentication Configuration
+## Prerequisites
 
-### Web.config Authentication Settings
-```xml
-<system.web>
-    <authentication mode="Windows" />
-    <authorization>
-        <deny users="?" />
-    </authorization>
-</system.web>
-```
-
-### IIS Configuration
-- **Anonymous Authentication**: Disabled
-- **Windows Authentication**: Enabled
-- The application will automatically authenticate users using their Windows credentials
+- **.NET 9.0 SDK**  [Download](https://dotnet.microsoft.com/download/dotnet/9.0)
+- **SQL Server LocalDB** (included with Visual Studio) or SQL Server instance
 
 ## Database Configuration
 
-The application uses SQL Server LocalDB with the following connection string in `Web.config`:
-```xml
-<connectionStrings>
-    <add name="DefaultConnection" 
-         connectionString="Data Source=(LocalDb)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\ContosoUniversity.mdf;Initial Catalog=ContosoUniversity;Integrated Security=True" 
-         providerName="System.Data.SqlClient" />
-</connectionStrings>
+Connection string in `appsettings.json`:
+```json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Data Source=(LocalDb)\\MSSQLLocalDB;Initial Catalog=ContosoUniversityNoAuthEFCore;Integrated Security=True;TrustServerCertificate=True"
+  }
+}
 ```
 
 ## Running the Application
 
 1. **Prerequisites**:
-   - Visual Studio 2019 or later
-   - IIS Express
+   - .NET 9.0 SDK installed
    - SQL Server LocalDB
 
 2. **Setup**:
-   - Open the project in Visual Studio
-   - Restore NuGet packages
-   - Build the solution
-   - Run using IIS Express
+   ```bash
+   dotnet restore
+   dotnet build
+   dotnet run
+   ```
 
-3. **Authentication**:
-   - The application will prompt for Windows credentials if not automatically authenticated
-   - Users must have a valid Windows account to access the application
-   - The authenticated user's name will be displayed in the navigation bar
+3. The application will be available at `http://localhost:5000` (or the port shown in the console).
 
 ## Features
 
@@ -89,25 +81,15 @@ The application uses SQL Server LocalDB with the following connection string in 
 - **Department Management**: Manage departments and their administrators
 - **Statistics**: View enrollment statistics by date
 
-## Security Features
-
-- **Windows Authentication**: Leverages Active Directory/Windows domain authentication
-- **Authorization**: All pages require authentication
-- **User Identity**: Display authenticated user information
-- **Secure by Default**: No anonymous access allowed
-
 ## Database Initialization
 
-The application uses Entity Framework 6 Code First with a database initializer that:
-- Creates the database if it doesn't exist
+The application uses Entity Framework Core Code First with a database initializer that:
+- Creates the database on first run
 - Seeds sample data including students, instructors, courses, and departments
-- Handles model changes by recreating the database
 
-## Migration Notes
+## Performance Improvements (.NET 9.0 vs .NET Framework 4.8)
 
-Key differences from the original ASP.NET Core version:
-- Uses synchronous methods instead of async/await patterns
-- Entity Framework 6 syntax for database operations
-- Traditional ASP.NET MVC 5 dependency injection patterns
-- Windows Authentication instead of cookie authentication
-- .NET Framework configuration in Web.config instead of appsettings.json
+- **Faster startup**: .NET 9.0 has significantly improved cold start times
+- **Higher throughput**: Improved HTTP/Kestrel pipeline for better request throughput
+- **Lower memory usage**: Reduced memory footprint with .NET 9.0 runtime optimizations
+- **Async I/O**: EF Core enables proper async database operations

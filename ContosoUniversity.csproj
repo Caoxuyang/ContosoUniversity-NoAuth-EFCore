@@ -1,8 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
-  </PropertyGroup>
-  <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <OutputPath>bin\</OutputPath>
@@ -10,9 +7,6 @@
   <ItemGroup>
     <Content Include="Uploads\TeachingMaterials\course_1045_2b7f6522-b007-4c5d-9304-57b3ef4a182c.jpg" />
     <Content Include="Uploads\TeachingMaterials\.gitkeep" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.0" />

@@ -506,7 +506,7 @@
         "passIntegrationTests": "false",
         "securityComplianceCheck": "false"
       },
-      "status": "pending"
+      "status": "complete"
     },
     {
       "type": "upgrade",
@@ -526,7 +526,7 @@
         "passIntegrationTests": "false",
         "securityComplianceCheck": "false"
       },
-      "status": "pending"
+      "status": "complete"
     },
     {
       "type": "upgrade",
@@ -546,7 +546,7 @@
         "passIntegrationTests": "false",
         "securityComplianceCheck": "false"
       },
-      "status": "pending"
+      "status": "complete"
     },
     {
       "type": "upgrade",
@@ -566,7 +566,7 @@
         "passIntegrationTests": "false",
         "securityComplianceCheck": "false"
       },
-      "status": "pending"
+      "status": "complete"
     },
     {
       "type": "upgrade",
@@ -586,7 +586,7 @@
         "passIntegrationTests": "false",
         "securityComplianceCheck": "false"
       },
-      "status": "pending"
+      "status": "complete"
     }
   ],
   "metadata": {
