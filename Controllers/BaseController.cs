@@ -1,5 +1,5 @@
 using System;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using ContosoUniversity.Services;
 using ContosoUniversity.Models;
 using ContosoUniversity.Data;
@@ -11,9 +11,9 @@ namespace ContosoUniversity.Controllers
         protected SchoolContext db;
         protected NotificationService notificationService = new NotificationService();
 
-        public BaseController()
+        public BaseController(SchoolContext context)
         {
-            db = SchoolContextFactory.Create();
+            db = context;
         }
 
         protected void SendEntityNotification(string entityType, string entityId, EntityOperation operation)
