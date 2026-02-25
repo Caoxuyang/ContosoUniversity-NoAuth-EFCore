@@ -1,8 +1,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
-using System.Net;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using ContosoUniversity.Data;
 using ContosoUniversity.Models;
 
@@ -10,75 +9,78 @@ namespace ContosoUniversity.Controllers
 {
     public class DepartmentsController : BaseController
     {
-        // GET: Departments - All roles can view
-        public ActionResult Index()
+        public DepartmentsController(SchoolContext context) : base(context)
+        {
+        }
+
+        // GET: Departments
+        public IActionResult Index()
         {
             var departments = db.Departments.Include(d => d.Administrator);
             return View(departments.ToList());
         }
 
         // GET: Departments/Details/5
-        public ActionResult Details(int? id)
+        public IActionResult Details(int? id)
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return BadRequest();
             }
             Department department = db.Departments.Find(id);
             if (department == null)
             {
-                return HttpNotFound();
+                return NotFound();
             }
             return View(department);
         }
 
         // GET: Departments/Create
-        public ActionResult Create()
+        public IActionResult Create()
         {
-            ViewBag.InstructorID = new SelectList(db.Instructors, "ID", "FullName");
+            ViewBag.InstructorID = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(db.Instructors, "ID", "FullName");
             return View();
         }
 
         // POST: Departments/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Name,Budget,StartDate,InstructorID")] Department department)
+        public IActionResult Create([Bind("Name,Budget,StartDate,InstructorID")] Department department)
         {
             if (ModelState.IsValid)
             {
                 db.Departments.Add(department);
                 db.SaveChanges();
                 
-                // Send notification for department creation
                 SendEntityNotification("Department", department.DepartmentID.ToString(), department.Name, EntityOperation.CREATE);
                 
                 return RedirectToAction("Index");
             }
 
-            ViewBag.InstructorID = new SelectList(db.Instructors, "ID", "FullName", department.InstructorID);
+            ViewBag.InstructorID = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(db.Instructors, "ID", "FullName", department.InstructorID);
             return View(department);
         }
 
         // GET: Departments/Edit/5
-        public ActionResult Edit(int? id)
+        public IActionResult Edit(int? id)
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return BadRequest();
             }
             Department department = db.Departments.Find(id);
             if (department == null)
             {
-                return HttpNotFound();
+                return NotFound();
             }
-            ViewBag.InstructorID = new SelectList(db.Instructors, "ID", "FullName", department.InstructorID);
+            ViewBag.InstructorID = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(db.Instructors, "ID", "FullName", department.InstructorID);
             return View(department);
         }
 
         // POST: Departments/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "DepartmentID,Name,Budget,StartDate,InstructorID,RowVersion")] Department department)
+        public IActionResult Edit([Bind("DepartmentID,Name,Budget,StartDate,InstructorID,RowVersion")] Department department)
         {
             try
             {
@@ -87,7 +89,6 @@ namespace ContosoUniversity.Controllers
                     db.Entry(department).State = EntityState.Modified;
                     db.SaveChanges();
                     
-                    // Send notification for department update
                     SendEntityNotification("Department", department.DepartmentID.ToString(), department.Name, EntityOperation.UPDATE);
                     
                     return RedirectToAction("Index");
@@ -129,21 +130,21 @@ namespace ContosoUniversity.Controllers
                 }
             }
             
-            ViewBag.InstructorID = new SelectList(db.Instructors, "ID", "FullName", department.InstructorID);
+            ViewBag.InstructorID = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(db.Instructors, "ID", "FullName", department.InstructorID);
             return View(department);
         }
 
         // GET: Departments/Delete/5
-        public ActionResult Delete(int? id)
+        public IActionResult Delete(int? id)
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return BadRequest();
             }
             Department department = db.Departments.Find(id);
             if (department == null)
             {
-                return HttpNotFound();
+                return NotFound();
             }
             return View(department);
         }
@@ -151,14 +152,13 @@ namespace ContosoUniversity.Controllers
         // POST: Departments/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(int id)
         {
             Department department = db.Departments.Find(id);
             var departmentName = department.Name;
             db.Departments.Remove(department);
             db.SaveChanges();
             
-            // Send notification for department deletion
             SendEntityNotification("Department", id.ToString(), departmentName, EntityOperation.DELETE);
             
             return RedirectToAction("Index");
