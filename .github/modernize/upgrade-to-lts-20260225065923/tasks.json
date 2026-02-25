@@ -457,7 +457,11 @@
         "passIntegrationTests": "false",
         "securityComplianceCheck": "false"
       },
-      "status": "pending"
+      "successCriteriaStatus": {
+        "passBuild": "true"
+      },
+      "status": "success",
+      "taskSummary": "dotnet clean, restore, and build --configuration Release all succeeded. 0 errors, 1 warning (CS0114 in HomeController.Unauthorized()). Compiled assembly ContosoUniversity.dll generated under bin\\net9.0\\ targeting .NET 9.0."
     },
     {
       "type": "upgrade",
@@ -477,7 +481,12 @@
         "passIntegrationTests": "false",
         "securityComplianceCheck": "false"
       },
-      "status": "pending"
+      "successCriteriaStatus": {
+        "passBuild": "true",
+        "passUnitTests": "true"
+      },
+      "status": "success",
+      "taskSummary": "No test projects found in the solution. The solution contains only the main ContosoUniversity.csproj web application project. No unit tests to run; marked as success per requirements."
     },
     {
       "type": "upgrade",
