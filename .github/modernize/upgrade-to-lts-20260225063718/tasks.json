@@ -1,0 +1,103 @@
+{
+  "$schema": "tasks-schema.json",
+  "description": ".NET version upgrade plan from .NET Framework 4.8 to .NET 9.0",
+  "tasks": [
+    {
+      "type": "upgrade",
+      "id": "001-upgrade-sdk-style-conversion",
+      "description": "Convert ContosoUniversity.csproj to SDK-style project format",
+      "requirements": "Convert legacy non-SDK-style .csproj (ToolsVersion='15.0') to modern SDK-style format. Use <Project Sdk='Microsoft.NET.Sdk.Web'>. Keep TargetFramework as net48 (no framework change yet). Migrate all packages from packages.config to PackageReference format. Remove packages.config file after conversion. Preserve ProjectGuid, RootNamespace, and AssemblyName. Auto-include .cs and .cshtml files (remove explicit Content and Compile elements). Build must succeed on .NET Framework 4.8 after conversion.",
+      "dependencies": [],
+      "environmentConfiguration": null,
+      "skills": [],
+      "successCriteria": {
+        "passBuild": "true",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "false",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "false"
+      },
+      "status": "pending"
+    },
+    {
+      "type": "upgrade",
+      "id": "002-upgrade-aspnet-core-migration",
+      "description": "Migrate from ASP.NET MVC 5 to ASP.NET Core MVC",
+      "requirements": "Migrate from System.Web-based ASP.NET MVC 5 to ASP.NET Core MVC. Create Program.cs with CreateHostBuilder and Main method. Create Startup.cs with ConfigureServices (add AddControllersWithViews, AddDbContext for SchoolContext, AddScoped for NotificationService) and Configure (UseDeveloperExceptionPage, UseExceptionHandler, UseHttpsRedirection, UseStaticFiles, UseRouting, UseAuthorization, MapControllerRoute). Update all controllers: change 'using System.Web.Mvc' to 'using Microsoft.AspNetCore.Mvc', replace HttpNotFoundResult with NotFoundResult, replace HttpStatusCodeResult with StatusCodeResult, use IActionResult return types. Update Views/Web.config to Views/_ViewImports.cshtml with @using ContosoUniversity, @using ContosoUniversity.Models, @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers. Create appsettings.json with Logging, AllowedHosts, and ConnectionStrings sections (copy connection string from Web.config). Move static files (Content/, Scripts/) to wwwroot/ directory. Update _Layout.cshtml paths to use wwwroot. Replace manual DbContext instantiation with constructor dependency injection in all controllers. Update file upload code from HttpPostedFileBase to IFormFile if present. Remove ASP.NET MVC 5 packages: Microsoft.AspNet.Mvc, Microsoft.AspNet.Razor, Microsoft.AspNet.WebPages, Microsoft.AspNet.Web.Optimization, Microsoft.Web.Infrastructure, Microsoft.CodeDom.Providers.DotNetCompilerPlatform. Keep TargetFramework as net48 temporarily.",
+      "dependencies": ["001-upgrade-sdk-style-conversion"],
+      "environmentConfiguration": null,
+      "skills": [],
+      "successCriteria": {
+        "passBuild": "true",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "false",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "false"
+      },
+      "status": "pending"
+    },
+    {
+      "type": "upgrade",
+      "id": "003-upgrade-target-framework-net90",
+      "description": "Update target framework from .NET Framework 4.8 to .NET 9.0",
+      "requirements": "Change <TargetFramework> in ContosoUniversity.csproj from net48 to net9.0. Verify .NET 9.0 SDK is installed using 'dotnet --list-sdks'. Run 'dotnet build' and document any compilation errors (will be fixed in next task). Do not fix errors yet, just change the target framework.",
+      "dependencies": ["002-upgrade-aspnet-core-migration"],
+      "environmentConfiguration": null,
+      "skills": [],
+      "successCriteria": {
+        "passBuild": "false",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "false",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "false"
+      },
+      "status": "pending"
+    },
+    {
+      "type": "upgrade",
+      "id": "004-upgrade-packages-net90",
+      "description": "Upgrade NuGet packages to .NET 9.0-compatible versions",
+      "requirements": "Remove packages included in .NET 9.0 runtime: System.Buffers, System.Memory, System.Numerics.Vectors, System.Runtime.CompilerServices.Unsafe, System.Threading.Tasks.Extensions, System.Collections.Immutable, System.Diagnostics.DiagnosticSource, Microsoft.Bcl.AsyncInterfaces, Microsoft.Bcl.HashCode, NETStandard.Library. Remove obsolete packages: Antlr, WebGrease, Modernizr (keep as static file). Remove all Microsoft.Extensions.* packages (Caching.Abstractions, Caching.Memory, Configuration, Configuration.Abstractions, Configuration.Binder, DependencyInjection, DependencyInjection.Abstractions, Logging, Logging.Abstractions, Options, Primitives) - these are included in .NET 9.0 runtime. Upgrade Microsoft.EntityFrameworkCore to version 9.0.0. Upgrade Microsoft.EntityFrameworkCore.SqlServer to version 9.0.0. Upgrade Microsoft.EntityFrameworkCore.Tools to version 9.0.0. Remove Microsoft.EntityFrameworkCore.Abstractions, Microsoft.EntityFrameworkCore.Relational, Microsoft.EntityFrameworkCore.Analyzers (included in main EF Core 9.0 package). Upgrade Microsoft.Data.SqlClient from 2.1.4 to 5.2.1 (SECURITY UPDATE - version 2.1.4 has known vulnerabilities). Upgrade Microsoft.Identity.Client to version 4.61.0. Keep Newtonsoft.Json at version 13.0.3 (already compatible). Run 'dotnet restore'. Verify no security vulnerabilities with 'dotnet list package --vulnerable'.",
+      "dependencies": ["003-upgrade-target-framework-net90"],
+      "environmentConfiguration": null,
+      "skills": [],
+      "successCriteria": {
+        "passBuild": "false",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "false",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "true"
+      },
+      "status": "pending"
+    },
+    {
+      "type": "upgrade",
+      "id": "005-upgrade-code-compatibility-net90",
+      "description": "Fix compilation errors and update code patterns for .NET 9.0 compatibility",
+      "requirements": "Run 'dotnet build' and fix all compilation errors. Update async patterns to use async/await properly. Ensure all controller actions return IActionResult or ActionResult<T>. Update IConfiguration access to use dependency injection instead of ConfigurationManager. Fix any EF Core API changes from version 3.1 to 9.0. Update deprecated patterns to modern equivalents. Ensure file upload code uses IFormFile instead of HttpPostedFileBase. Fix any null reference warnings if nullable reference types are enabled. Update any System.Web dependencies to ASP.NET Core equivalents. Test database connection and CRUD operations. Verify static files load correctly from wwwroot. Run application and fix runtime errors. Build must succeed with 0 errors.",
+      "dependencies": ["004-upgrade-packages-net90"],
+      "environmentConfiguration": null,
+      "skills": [],
+      "successCriteria": {
+        "passBuild": "true",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "false",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "false"
+      },
+      "status": "pending"
+    }
+  ],
+  "metadata": {
+    "planName": "upgrade-to-net9",
+    "projectName": "ContosoUniversity",
+    "language": "dotnet",
+    "createdAt": "2026-02-25T06:37:18.000Z",
+    "version": "1.0"
+  }
+}
