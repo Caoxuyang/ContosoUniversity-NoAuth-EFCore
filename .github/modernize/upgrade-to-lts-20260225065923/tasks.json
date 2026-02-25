@@ -434,7 +434,10 @@
         "passIntegrationTests": "false",
         "securityComplianceCheck": "false"
       },
-      "status": "pending"
+      "successCriteriaStatus": {
+        "passBuild": "true"
+      },
+      "status": "success"
     },
     {
       "type": "upgrade",
