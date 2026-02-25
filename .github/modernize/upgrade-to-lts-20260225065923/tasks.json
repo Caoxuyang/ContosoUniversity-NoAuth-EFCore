@@ -1,0 +1,537 @@
+{
+  "$schema": "tasks-schema.json",
+  "description": ".NET upgrade plan from .NET Framework 4.8 to .NET 9.0 for ContosoUniversity application",
+  "tasks": [
+    {
+      "type": "upgrade",
+      "id": "001-upgrade-sdk-style-conversion",
+      "description": "Convert ContosoUniversity.csproj to SDK-style project format",
+      "requirements": "Convert legacy non-SDK-style .csproj to modern SDK-style format. Migrate package references from packages.config to PackageReference elements. Keep target framework as net48 initially. Do NOT change target framework. Remove packages.config after conversion. Verify project builds.",
+      "dependencies": [],
+      "environmentConfiguration": null,
+      "skills": [
+        {
+          "name": "sdk-style-conversion",
+          "location": "builtin"
+        }
+      ],
+      "successCriteria": {
+        "passBuild": "true",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "true",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "false"
+      },
+      "status": "pending"
+    },
+    {
+      "type": "upgrade",
+      "id": "002-upgrade-target-framework",
+      "description": "Update target framework to net9.0 and change SDK type",
+      "requirements": "Change TargetFramework from net48 to net9.0 in .csproj file. Change Project Sdk from Microsoft.NET.Sdk to Microsoft.NET.Sdk.Web. Add OutputType as Exe if not present. Do not build yet - this is just the framework change.",
+      "dependencies": ["001-upgrade-sdk-style-conversion"],
+      "environmentConfiguration": null,
+      "skills": [],
+      "successCriteria": {
+        "passBuild": "false",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "false",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "false"
+      },
+      "status": "pending"
+    },
+    {
+      "type": "upgrade",
+      "id": "003-upgrade-entity-framework-core",
+      "description": "Upgrade Entity Framework Core from 3.1.32 to 9.0.0",
+      "requirements": "Remove EF Core 3.1 packages: Microsoft.EntityFrameworkCore, Microsoft.EntityFrameworkCore.Abstractions, Microsoft.EntityFrameworkCore.Analyzers, Microsoft.EntityFrameworkCore.Relational, Microsoft.EntityFrameworkCore.SqlServer, Microsoft.EntityFrameworkCore.Tools. Add EF Core 9.0 packages: Microsoft.EntityFrameworkCore version 9.0.0, Microsoft.EntityFrameworkCore.SqlServer version 9.0.0, Microsoft.EntityFrameworkCore.Tools version 9.0.0. Note that Abstractions, Analyzers, and Relational are included transitively.",
+      "dependencies": ["002-upgrade-target-framework"],
+      "environmentConfiguration": null,
+      "skills": [],
+      "successCriteria": {
+        "passBuild": "false",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "false",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "true"
+      },
+      "status": "pending"
+    },
+    {
+      "type": "upgrade",
+      "id": "004-upgrade-sqlclient-security",
+      "description": "Upgrade Microsoft.Data.SqlClient to 6.0.0 to fix security vulnerabilities",
+      "requirements": "Remove Microsoft.Data.SqlClient version 2.1.4 which has security vulnerabilities. Remove Microsoft.Data.SqlClient.SNI.runtime version 2.1.1 as it's included transitively. Add Microsoft.Data.SqlClient version 6.0.0 or higher. Update connection strings if needed as newer versions use Encrypt=True by default.",
+      "dependencies": ["002-upgrade-target-framework"],
+      "environmentConfiguration": null,
+      "skills": [
+        {
+          "name": "sqlclient-migration",
+          "location": "builtin"
+        }
+      ],
+      "successCriteria": {
+        "passBuild": "false",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "false",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "true"
+      },
+      "status": "pending"
+    },
+    {
+      "type": "upgrade",
+      "id": "005-upgrade-remove-framework-packages",
+      "description": "Remove packages included in .NET 9.0 framework",
+      "requirements": "Remove packages that are now included in .NET 9.0: Microsoft.Bcl.AsyncInterfaces, Microsoft.Bcl.HashCode, NETStandard.Library, System.Buffers, System.Collections.Immutable, System.ComponentModel.Annotations, System.Diagnostics.DiagnosticSource, System.Memory, System.Numerics.Vectors, System.Runtime.CompilerServices.Unsafe, System.Threading.Tasks.Extensions. Remove incompatible packages: Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Microsoft.Web.Infrastructure, Antlr, WebGrease, Microsoft.AspNet.Web.Optimization.",
+      "dependencies": ["002-upgrade-target-framework"],
+      "environmentConfiguration": null,
+      "skills": [],
+      "successCriteria": {
+        "passBuild": "false",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "false",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "false"
+      },
+      "status": "pending"
+    },
+    {
+      "type": "upgrade",
+      "id": "006-upgrade-remove-extensions-packages",
+      "description": "Remove Microsoft.Extensions packages included in ASP.NET Core",
+      "requirements": "Remove Microsoft.Extensions 3.1.32 packages as they are included transitively in ASP.NET Core 9.0: Microsoft.Extensions.Caching.Abstractions, Microsoft.Extensions.Caching.Memory, Microsoft.Extensions.Configuration, Microsoft.Extensions.Configuration.Abstractions, Microsoft.Extensions.Configuration.Binder, Microsoft.Extensions.DependencyInjection, Microsoft.Extensions.DependencyInjection.Abstractions, Microsoft.Extensions.Logging, Microsoft.Extensions.Logging.Abstractions, Microsoft.Extensions.Options, Microsoft.Extensions.Primitives. Only add explicit version 9.0.0 references if specific features are needed.",
+      "dependencies": ["002-upgrade-target-framework"],
+      "environmentConfiguration": null,
+      "skills": [],
+      "successCriteria": {
+        "passBuild": "false",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "false",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "false"
+      },
+      "status": "pending"
+    },
+    {
+      "type": "upgrade",
+      "id": "007-upgrade-newtonsoft-json",
+      "description": "Upgrade Newtonsoft.Json to latest version",
+      "requirements": "Update Newtonsoft.Json from 13.0.3 to 14.0.0 or higher. Verify JSON serialization still works. Consider migrating to System.Text.Json which is included in .NET 9.0 for better performance.",
+      "dependencies": ["002-upgrade-target-framework"],
+      "environmentConfiguration": null,
+      "skills": [],
+      "successCriteria": {
+        "passBuild": "false",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "false",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "false"
+      },
+      "status": "pending"
+    },
+    {
+      "type": "upgrade",
+      "id": "008-upgrade-remove-aspnet-mvc5-packages",
+      "description": "Remove ASP.NET MVC 5 packages",
+      "requirements": "Remove ASP.NET MVC 5 packages that are replaced by ASP.NET Core MVC: Microsoft.AspNet.Mvc (5.2.9), Microsoft.AspNet.Razor (3.2.9), Microsoft.AspNet.WebPages (3.2.9). These are replaced by ASP.NET Core MVC framework included in Microsoft.NET.Sdk.Web. No explicit package addition needed.",
+      "dependencies": ["002-upgrade-target-framework"],
+      "environmentConfiguration": null,
+      "skills": [],
+      "successCriteria": {
+        "passBuild": "false",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "false",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "false"
+      },
+      "status": "pending"
+    },
+    {
+      "type": "upgrade",
+      "id": "009-upgrade-handle-client-packages",
+      "description": "Handle jQuery and client-side library packages",
+      "requirements": "Move client-side packages from NuGet to npm/libman or wwwroot: jQuery (3.7.1), jQuery.Validation (1.21.0), Microsoft.jQuery.Unobtrusive.Validation (4.0.0), bootstrap (5.3.3), Modernizr (2.6.2). Recommended approach: use npm and LibMan to manage client-side dependencies. Update script references in _Layout.cshtml to new paths in wwwroot.",
+      "dependencies": ["002-upgrade-target-framework"],
+      "environmentConfiguration": null,
+      "skills": [],
+      "successCriteria": {
+        "passBuild": "false",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "false",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "false"
+      },
+      "status": "pending"
+    },
+    {
+      "type": "upgrade",
+      "id": "010-upgrade-identity-client",
+      "description": "Update Microsoft.Identity.Client package",
+      "requirements": "Update Microsoft.Identity.Client from 4.21.1 to latest version (4.65.0 or higher). If not actively used for authentication, consider removing the package.",
+      "dependencies": ["002-upgrade-target-framework"],
+      "environmentConfiguration": null,
+      "skills": [],
+      "successCriteria": {
+        "passBuild": "false",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "false",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "false"
+      },
+      "status": "pending"
+    },
+    {
+      "type": "upgrade",
+      "id": "011-upgrade-restore-and-build",
+      "description": "Restore packages and build to identify compatibility issues",
+      "requirements": "Run dotnet restore to restore all updated packages. Run dotnet build to identify compilation errors. Build will fail with errors due to code incompatibilities - this is expected. Document all build errors for categorization: namespace changes, API changes, type removals, syntax incompatibilities.",
+      "dependencies": [
+        "003-upgrade-entity-framework-core",
+        "004-upgrade-sqlclient-security",
+        "005-upgrade-remove-framework-packages",
+        "006-upgrade-remove-extensions-packages",
+        "007-upgrade-newtonsoft-json",
+        "008-upgrade-remove-aspnet-mvc5-packages",
+        "009-upgrade-handle-client-packages",
+        "010-upgrade-identity-client"
+      ],
+      "environmentConfiguration": null,
+      "skills": [],
+      "successCriteria": {
+        "passBuild": "false",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "false",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "true"
+      },
+      "status": "pending"
+    },
+    {
+      "type": "upgrade",
+      "id": "012-upgrade-migrate-startup",
+      "description": "Migrate application startup from Global.asax to Program.cs",
+      "requirements": "Create new Program.cs file with WebApplicationBuilder pattern. Migrate Application_Start logic from Global.asax.cs to Program.cs services configuration. Migrate route registration to MapControllerRoute. Migrate filter registration to AddControllersWithViews. Add DbContext registration with SQL Server connection. Delete Global.asax and Global.asax.cs files. If App_Start folder exists (RouteConfig.cs, BundleConfig.cs, FilterConfig.cs), migrate configurations to Program.cs and delete the folder. Application should start without errors after this migration.",
+      "dependencies": ["011-upgrade-restore-and-build"],
+      "environmentConfiguration": null,
+      "skills": [],
+      "successCriteria": {
+        "passBuild": "false",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "false",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "false"
+      },
+      "status": "pending"
+    },
+    {
+      "type": "upgrade",
+      "id": "013-upgrade-migrate-configuration",
+      "description": "Migrate configuration from Web.config to appsettings.json",
+      "requirements": "Create appsettings.json in project root with Logging, AllowedHosts, and ConnectionStrings sections. Create appsettings.Development.json for development-specific settings. Migrate connection strings from Web.config to appsettings.json. Migrate app settings to root-level keys or custom sections. Update connection string format if needed (Encrypt=True for SQL Server). Update code to use IConfiguration instead of ConfigurationManager. Keep Web.config minimal with only required elements for IIS.",
+      "dependencies": ["011-upgrade-restore-and-build"],
+      "environmentConfiguration": null,
+      "skills": [],
+      "successCriteria": {
+        "passBuild": "false",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "false",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "false"
+      },
+      "status": "pending"
+    },
+    {
+      "type": "upgrade",
+      "id": "014-upgrade-migrate-dbcontext",
+      "description": "Migrate DbContext registration to dependency injection",
+      "requirements": "Ensure DbContext is registered in Program.cs services with SQL Server connection from configuration. Update all controllers to accept DbContext via constructor injection instead of creating new instances. Remove manual DbContext instantiation (e.g., using var context = new SchoolContext()). Verify DbContext is properly disposed by DI container. If using EF Core migrations, verify they still work with dotnet ef migrations list.",
+      "dependencies": ["012-upgrade-migrate-startup", "013-upgrade-migrate-configuration"],
+      "environmentConfiguration": null,
+      "skills": [
+        {
+          "name": "ef-dbcontext-migration",
+          "location": "builtin"
+        }
+      ],
+      "successCriteria": {
+        "passBuild": "false",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "false",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "false"
+      },
+      "status": "pending"
+    },
+    {
+      "type": "upgrade",
+      "id": "015-upgrade-update-controllers",
+      "description": "Update controller and action attributes",
+      "requirements": "Update controller base class to use Microsoft.AspNetCore.Mvc.Controller. Update attribute routing if used - Route, HttpGet, HttpPost attributes. Update filter attributes - Authorize from Microsoft.AspNetCore.Authorization, ValidateAntiForgeryToken from Microsoft.AspNetCore.Mvc. Consider using ActionResult<T> for API endpoints. Verify routing and filter attributes work correctly.",
+      "dependencies": ["012-upgrade-migrate-startup"],
+      "environmentConfiguration": null,
+      "skills": [],
+      "successCriteria": {
+        "passBuild": "false",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "false",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "false"
+      },
+      "status": "pending"
+    },
+    {
+      "type": "upgrade",
+      "id": "016-upgrade-update-views",
+      "description": "Update views and Razor syntax to use Tag Helpers",
+      "requirements": "Update _ViewImports.cshtml to include necessary namespaces and add TagHelpers. Update _Layout.cshtml to replace Scripts.Render and Styles.Render with script and link tags pointing to wwwroot paths. Update all views to use Tag Helpers instead of HTML Helpers: Html.ActionLink to asp-action, Html.BeginForm to form asp-action, Html.ValidationSummary to asp-validation-summary, Html.LabelFor to label asp-for, Html.TextBoxFor to input asp-for, Html.ValidationMessageFor to span asp-validation-for. Add AddRazorSupportForMvc to .csproj if needed. Verify all views render properly.",
+      "dependencies": ["012-upgrade-migrate-startup"],
+      "environmentConfiguration": null,
+      "skills": [],
+      "successCriteria": {
+        "passBuild": "false",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "false",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "false"
+      },
+      "status": "pending"
+    },
+    {
+      "type": "upgrade",
+      "id": "017-upgrade-update-validation",
+      "description": "Update model binding and validation",
+      "requirements": "Verify data annotation attributes work: Required, StringLength, Range, RegularExpression, Display. Update namespace to System.ComponentModel.DataAnnotations if needed. Add ModelState validation in controllers. Ensure client-side validation works with jQuery Validation and Unobtrusive Validation.",
+      "dependencies": ["012-upgrade-migrate-startup"],
+      "environmentConfiguration": null,
+      "skills": [],
+      "successCriteria": {
+        "passBuild": "false",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "false",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "false"
+      },
+      "status": "pending"
+    },
+    {
+      "type": "upgrade",
+      "id": "018-upgrade-migrate-static-files",
+      "description": "Update static file handling and create wwwroot structure",
+      "requirements": "Create wwwroot folder in project root if it doesn't exist. Move static content from project root to wwwroot: Content/ to wwwroot/css/, Scripts/ to wwwroot/js/, fonts/ to wwwroot/fonts/, images to wwwroot/images/. Update references in _Layout.cshtml and other views to use tilde paths (~/css/, ~/js/, etc.). Add app.UseStaticFiles() to Program.cs. Verify all static files are accessible via browser.",
+      "dependencies": ["012-upgrade-migrate-startup"],
+      "environmentConfiguration": null,
+      "skills": [],
+      "successCriteria": {
+        "passBuild": "false",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "false",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "false"
+      },
+      "status": "pending"
+    },
+    {
+      "type": "upgrade",
+      "id": "019-upgrade-handle-authentication",
+      "description": "Handle authentication and authorization migration if applicable",
+      "requirements": "If using Forms Authentication, migrate to ASP.NET Core Cookie Authentication or Identity. Add authentication services to Program.cs with AddAuthentication and AddCookie. Add app.UseAuthentication() and app.UseAuthorization() to Program.cs pipeline. If using Windows Authentication, enable in Program.cs and launchSettings.json. Update Authorize and AllowAnonymous attributes namespace to Microsoft.AspNetCore.Authorization. Migrate custom authorization logic to ASP.NET Core policies. Verify authentication system works - users can log in/out and protected pages enforce authentication.",
+      "dependencies": ["012-upgrade-migrate-startup"],
+      "environmentConfiguration": null,
+      "skills": [],
+      "successCriteria": {
+        "passBuild": "false",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "false",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "false"
+      },
+      "status": "pending"
+    },
+    {
+      "type": "upgrade",
+      "id": "020-upgrade-fix-compilation-errors",
+      "description": "Fix remaining compilation errors for .NET 9.0 compatibility",
+      "requirements": "Run dotnet build and fix all remaining compilation errors. Common fixes: namespace changes (System.Web.Mvc to Microsoft.AspNetCore.Mvc, System.Web.Http to Microsoft.AspNetCore.Mvc, System.Web.Routing to Microsoft.AspNetCore.Routing), type renames (HttpContext.Current to injected HttpContext, Server.MapPath to IWebHostEnvironment.WebRootPath, Request.Url to HttpContext.Request.GetDisplayUrl(), Request.QueryString to HttpContext.Request.Query), removed APIs (HttpUtility.HtmlEncode to HtmlEncoder.Default.Encode, HttpServerUtility to IWebHostEnvironment, HttpContext.Cache to IMemoryCache). Use available skills like system-security-cryptography-migration for crypto namespace changes.",
+      "dependencies": [
+        "012-upgrade-migrate-startup",
+        "013-upgrade-migrate-configuration",
+        "014-upgrade-migrate-dbcontext",
+        "015-upgrade-update-controllers",
+        "016-upgrade-update-views",
+        "017-upgrade-update-validation",
+        "018-upgrade-migrate-static-files",
+        "019-upgrade-handle-authentication"
+      ],
+      "environmentConfiguration": null,
+      "skills": [
+        {
+          "name": "system-security-cryptography-migration",
+          "location": "builtin"
+        }
+      ],
+      "successCriteria": {
+        "passBuild": "true",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "false",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "false"
+      },
+      "status": "pending"
+    },
+    {
+      "type": "upgrade",
+      "id": "021-upgrade-restore-and-build-final",
+      "description": "Restore and build the solution successfully",
+      "requirements": "Clean previous build artifacts with dotnet clean. Restore packages with dotnet restore. Build solution with dotnet build --configuration Release. Verify: 0 errors, review warnings, check output directory for compiled assemblies targeting .NET 9.0.",
+      "dependencies": ["020-upgrade-fix-compilation-errors"],
+      "environmentConfiguration": null,
+      "skills": [],
+      "successCriteria": {
+        "passBuild": "true",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "false",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "false"
+      },
+      "status": "pending"
+    },
+    {
+      "type": "upgrade",
+      "id": "022-upgrade-run-tests",
+      "description": "Run unit tests if they exist",
+      "requirements": "Identify test projects in solution. Run tests with dotnet test --configuration Release. If tests fail: update test framework packages (xUnit, NUnit, MSTest), fix test code for .NET 9.0 compatibility, update mocks/stubs if needed. If no tests exist, document this and consider adding basic smoke tests.",
+      "dependencies": ["021-upgrade-restore-and-build-final"],
+      "environmentConfiguration": null,
+      "skills": [],
+      "successCriteria": {
+        "passBuild": "true",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "true",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "false"
+      },
+      "status": "pending"
+    },
+    {
+      "type": "upgrade",
+      "id": "023-upgrade-manual-testing",
+      "description": "Perform manual functional testing",
+      "requirements": "Run the application with dotnet run. Test core user flows: home page loads, navigation works, Student CRUD operations, Course management, Enrollment functionality, database connectivity, authentication/authorization if applicable, file uploads if applicable, search/filtering, pagination. Test in different browsers: Chrome, Edge, Firefox. Check browser console for JavaScript errors. Review application logs for errors/warnings. Document any issues found.",
+      "dependencies": ["021-upgrade-restore-and-build-final"],
+      "environmentConfiguration": null,
+      "skills": [],
+      "successCriteria": {
+        "passBuild": "true",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "false",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "false"
+      },
+      "status": "pending"
+    },
+    {
+      "type": "upgrade",
+      "id": "024-upgrade-performance-validation",
+      "description": "Validate performance and behavior",
+      "requirements": "Compare performance with .NET Framework version if metrics available: page load times, database query performance, memory usage, CPU usage. Verify behavior hasn't changed: data validation, business logic, error handling, logging. Check for .NET 9.0-specific improvements: startup time, response times, memory footprint. Document any significant changes.",
+      "dependencies": ["023-upgrade-manual-testing"],
+      "environmentConfiguration": null,
+      "skills": [],
+      "successCriteria": {
+        "passBuild": "true",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "false",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "false"
+      },
+      "status": "pending"
+    },
+    {
+      "type": "upgrade",
+      "id": "025-upgrade-cleanup",
+      "description": "Remove obsolete files and configurations",
+      "requirements": "Remove obsolete files: packages.config if not already removed, Global.asax and Global.asax.cs, App_Start folder, old Web.config sections (keep minimal for IIS). Clean up project file: remove commented-out package references, remove obsolete properties, organize package references. Update .gitignore to cover .NET 9.0 build artifacts and add wwwroot/lib if using libman.",
+      "dependencies": ["024-upgrade-performance-validation"],
+      "environmentConfiguration": null,
+      "skills": [],
+      "successCriteria": {
+        "passBuild": "true",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "false",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "false"
+      },
+      "status": "pending"
+    },
+    {
+      "type": "upgrade",
+      "id": "026-upgrade-update-documentation",
+      "description": "Update project documentation",
+      "requirements": "Update README.md: change framework version to .NET 9.0, update prerequisites (.NET 9.0 SDK required), update build instructions if changed, update deployment instructions if changed. Update SETUP_TESTING_GUIDE.md and other relevant documentation files. Document breaking changes: configuration changes, API changes, deployment changes. Create upgrade notes document explaining what was changed, why it was changed, and how to maintain it going forward.",
+      "dependencies": ["025-upgrade-cleanup"],
+      "environmentConfiguration": null,
+      "skills": [],
+      "successCriteria": {
+        "passBuild": "true",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "false",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "false"
+      },
+      "status": "pending"
+    },
+    {
+      "type": "upgrade",
+      "id": "027-upgrade-commit-changes",
+      "description": "Final verification and commit to source control",
+      "requirements": "Review all changes with git status and git diff. Stage all changes with git add. Commit with descriptive message detailing the upgrade from .NET Framework 4.8 to .NET 9.0, including all major changes: SDK-style conversion, target framework update, EF Core upgrade, SQL Client security fix, ASP.NET MVC to ASP.NET Core migration, Global.asax to Program.cs, Web.config to appsettings.json, package upgrades, view migrations, static file moves, documentation updates. Tag the commit as v2.0-net9.0. Push to remote repository with branch and tags.",
+      "dependencies": ["026-upgrade-update-documentation"],
+      "environmentConfiguration": null,
+      "skills": [],
+      "successCriteria": {
+        "passBuild": "true",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "false",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "false"
+      },
+      "status": "pending"
+    }
+  ],
+  "metadata": {
+    "planName": "upgrade-to-net9",
+    "projectName": "ContosoUniversity",
+    "language": "dotnet",
+    "createdAt": "2026-02-25T06:59:30.000Z",
+    "version": "1.0"
+  }
+}
