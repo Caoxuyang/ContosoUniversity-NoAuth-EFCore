@@ -1,0 +1,231 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Tasks template for ContosoUniversity .NET Framework 4.8 to .NET 9.0 upgrade. This file tracks individual migration tasks for the all-at-once upgrade strategy.",
+  "tasks": [
+    {
+      "type": "upgrade",
+      "id": "001-upgrade-project-structure-modernization",
+      "description": "Convert legacy .NET Framework project to modern SDK-style format",
+      "requirements": "Convert ContosoUniversity.csproj from legacy project format to SDK-style format. Remove packages.config. Update project file to use Microsoft.NET.Sdk.Web SDK. Set target framework to net9.0. Enable nullable reference types and implicit usings. Preserve RootNamespace and AssemblyName.",
+      "environmentConfiguration": null,
+      "status": "pending",
+      "skills": [
+        {
+          "name": "sdk-style-conversion",
+          "location": "builtin"
+        }
+      ],
+      "successCriteria": {
+        "passBuild": "true",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "true",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "false"
+      }
+    },
+    {
+      "type": "upgrade",
+      "id": "002-upgrade-package-migration",
+      "description": "Update NuGet packages to .NET 9.0-compatible versions",
+      "requirements": "Replace ASP.NET MVC 5 packages with ASP.NET Core framework references. Update Entity Framework Core from 3.1.32 to 9.0.0 (including SqlServer and Tools packages). Update Microsoft.Data.SqlClient from 2.1.4 to 5.2.0. Add MSMQ.Messaging 1.3.0 package for MSMQ support. Update Microsoft.Identity.Client from 4.21.1 to 4.66.2. Keep Newtonsoft.Json 13.0.3 for backward compatibility. Remove Web.Optimization, AspNet.Razor, AspNet.WebPages, AspNet.Mvc packages (replaced by ASP.NET Core framework).",
+      "dependencies": ["001-upgrade-project-structure-modernization"],
+      "environmentConfiguration": null,
+      "status": "pending",
+      "skills": [],
+      "successCriteria": {
+        "passBuild": "true",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "true",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "true"
+      }
+    },
+    {
+      "type": "upgrade",
+      "id": "003-upgrade-application-structure-transformation",
+      "description": "Transform ASP.NET MVC 5 structure to ASP.NET Core structure",
+      "requirements": "Create wwwroot directory and move static files (Content to wwwroot/css, Scripts to wwwroot/js, Uploads to wwwroot/uploads, favicon.ico to wwwroot/). Replace Global.asax and Global.asax.cs with Program.cs implementing ASP.NET Core startup pattern with dependency injection, routing configuration, and database initialization. Delete App_Start folder (RouteConfig.cs, FilterConfig.cs, BundleConfig.cs). Replace Web.config with appsettings.json and appsettings.Development.json containing connection strings and configuration settings. Migrate NotificationQueuePath setting to appsettings.json.",
+      "dependencies": ["002-upgrade-package-migration"],
+      "environmentConfiguration": null,
+      "status": "pending",
+      "skills": [],
+      "successCriteria": {
+        "passBuild": "true",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "true",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "false"
+      }
+    },
+    {
+      "type": "upgrade",
+      "id": "004-upgrade-controller-migration",
+      "description": "Update all controllers to ASP.NET Core MVC",
+      "requirements": "Update all controllers (BaseController.cs, HomeController.cs, StudentsController.cs, CoursesController.cs, InstructorsController.cs, DepartmentsController.cs, NotificationsController.cs). Replace 'using System.Web.Mvc' with 'using Microsoft.AspNetCore.Mvc'. Update OnException method signature in BaseController. Replace HttpNotFound() with NotFound(). Replace HttpStatusCodeResult with StatusCode(). Update Request.RequestContext references to HttpContext.Request. Inject IWebHostEnvironment and IConfiguration where Server.MapPath or ConfigurationManager were used.",
+      "dependencies": ["003-upgrade-application-structure-transformation"],
+      "environmentConfiguration": null,
+      "status": "pending",
+      "skills": [],
+      "successCriteria": {
+        "passBuild": "true",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "true",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "false"
+      }
+    },
+    {
+      "type": "upgrade",
+      "id": "005-upgrade-view-migration",
+      "description": "Update Razor views for ASP.NET Core",
+      "requirements": "Remove Views/Web.config. Create Views/_ViewImports.cshtml with namespace imports and tag helper registration. Update all views to use ASP.NET Core tag helpers. Verify @Html.AntiForgeryToken() and @Url.Content() usage is ASP.NET Core compatible. Test all views render correctly.",
+      "dependencies": ["004-upgrade-controller-migration"],
+      "environmentConfiguration": null,
+      "status": "pending",
+      "skills": [],
+      "successCriteria": {
+        "passBuild": "true",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "true",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "false"
+      }
+    },
+    {
+      "type": "upgrade",
+      "id": "006-upgrade-data-context-migration",
+      "description": "Update Entity Framework data context for EF Core 9.0",
+      "requirements": "Update Data/SchoolContext.cs: Remove 'using System.Data.Entity', add 'using Microsoft.EntityFrameworkCore'. Update constructor to accept DbContextOptions<SchoolContext>. Maintain all DbSet properties (Students, Courses, Instructors, Departments, etc.). Update Data/SchoolContextFactory.cs to implement IDesignTimeDbContextFactory<SchoolContext> for design-time EF Core operations, reading connection string from appsettings.json. Verify DbInitializer.cs works with EF Core 9.0 APIs.",
+      "dependencies": ["003-upgrade-application-structure-transformation"],
+      "environmentConfiguration": null,
+      "status": "pending",
+      "skills": [
+        {
+          "name": "ef-dbcontext-migration",
+          "location": "builtin"
+        }
+      ],
+      "successCriteria": {
+        "passBuild": "true",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "true",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "false"
+      }
+    },
+    {
+      "type": "upgrade",
+      "id": "007-upgrade-msmq-notification-service",
+      "description": "Migrate MSMQ notification service to use MSMQ.Messaging adapter",
+      "requirements": "Update Services/NotificationService.cs: Replace 'using System.Messaging' with 'using MSMQ.Messaging'. Update queue initialization and message processing code to use MSMQ.Messaging API. Read queue path from IConfiguration instead of ConfigurationManager. Inject IConfiguration dependency. Test message sending and receiving functionality. Document MSMQ.Messaging as community package requiring Windows.",
+      "dependencies": ["002-upgrade-package-migration"],
+      "environmentConfiguration": null,
+      "status": "pending",
+      "skills": [
+        {
+          "name": "msmq-migration",
+          "location": "builtin"
+        }
+      ],
+      "successCriteria": {
+        "passBuild": "true",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "true",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "false"
+      }
+    },
+    {
+      "type": "upgrade",
+      "id": "008-upgrade-model-validation",
+      "description": "Verify and update model validation attributes",
+      "requirements": "Review all model classes (Student.cs, Course.cs, Instructor.cs, Department.cs, Enrollment.cs, etc.). Verify System.ComponentModel.DataAnnotations attributes are compatible with .NET 9.0. Test validation scenarios with ASP.NET Core model binding. Update any custom validation attributes if needed. Ensure validation works correctly in create/edit forms.",
+      "dependencies": ["004-upgrade-controller-migration", "005-upgrade-view-migration"],
+      "environmentConfiguration": null,
+      "status": "pending",
+      "skills": [],
+      "successCriteria": {
+        "passBuild": "true",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "true",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "false"
+      }
+    },
+    {
+      "type": "upgrade",
+      "id": "009-upgrade-build-compilation",
+      "description": "Resolve all compilation errors and warnings",
+      "requirements": "Run 'dotnet build' and resolve all compilation errors. Fix namespace conflicts between System.Web.Mvc and Microsoft.AspNetCore.Mvc. Add missing using directives. Update obsolete API usage. Fix API signature mismatches. Resolve HttpContext.Current, Server.MapPath, and ConfigurationManager references. Address nullable reference warnings if enabled. Achieve zero compilation errors and minimal warnings.",
+      "dependencies": [
+        "004-upgrade-controller-migration",
+        "005-upgrade-view-migration",
+        "006-upgrade-data-context-migration",
+        "007-upgrade-msmq-notification-service",
+        "008-upgrade-model-validation"
+      ],
+      "environmentConfiguration": null,
+      "status": "pending",
+      "skills": [],
+      "successCriteria": {
+        "passBuild": "true",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "true",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "false"
+      }
+    },
+    {
+      "type": "upgrade",
+      "id": "010-upgrade-runtime-testing",
+      "description": "Perform comprehensive runtime testing and validation",
+      "requirements": "Start application with 'dotnet run'. Test all features: Home page displays student statistics. Students CRUD operations (list, create, edit, delete, search, pagination). Courses CRUD operations (list, create, edit, delete). Instructors CRUD operations including course assignments. Departments CRUD operations. File upload functionality for teaching materials. Database initialization and EF Core queries. MSMQ notification system (send/receive messages). Configuration reading from appsettings.json. Static file serving (CSS, JavaScript). Verify zero runtime exceptions. Verify no console errors in browser. Document any behavioral differences from .NET Framework version.",
+      "dependencies": ["009-upgrade-build-compilation"],
+      "environmentConfiguration": null,
+      "status": "pending",
+      "skills": [],
+      "successCriteria": {
+        "passBuild": "true",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "true",
+        "passIntegrationTests": "true",
+        "securityComplianceCheck": "false"
+      }
+    },
+    {
+      "type": "upgrade",
+      "id": "011-upgrade-finalization",
+      "description": "Clean up artifacts and finalize upgrade",
+      "requirements": "Delete obj/ and bin/ directories. Delete packages/ folder (no longer used). Delete .vs/ folder and *.user files. Delete backup files (*.backup). Verify final project structure matches ASP.NET Core conventions (wwwroot/, Controllers/, Models/, Views/, Data/, Services/, Program.cs, appsettings.json). Update README.md with .NET 9.0 setup instructions. Commit all changes with comprehensive commit message including migration summary. Tag release as v2.0.0-net9.",
+      "dependencies": ["010-upgrade-runtime-testing"],
+      "environmentConfiguration": null,
+      "status": "pending",
+      "skills": [],
+      "successCriteria": {
+        "passBuild": "true",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "true",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "false"
+      }
+    }
+  ],
+  "metadata": {
+    "planName": ".NET Framework 4.8 to .NET 9.0 Upgrade",
+    "projectName": "ContosoUniversity",
+    "language": "C#",
+    "createdAt": "2026-02-25T06:43:50.444Z",
+    "version": "1.0"
+  }
+}
