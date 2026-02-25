@@ -59,7 +59,7 @@
         "passIntegrationTests": "false",
         "securityComplianceCheck": "true"
       },
-      "status": "pending"
+      "status": "success"
     },
     {
       "type": "upgrade",
@@ -82,7 +82,7 @@
         "passIntegrationTests": "false",
         "securityComplianceCheck": "true"
       },
-      "status": "pending"
+      "status": "success"
     },
     {
       "type": "upgrade",
@@ -100,7 +100,7 @@
         "passIntegrationTests": "false",
         "securityComplianceCheck": "false"
       },
-      "status": "pending"
+      "status": "success"
     },
     {
       "type": "upgrade",
@@ -118,7 +118,7 @@
         "passIntegrationTests": "false",
         "securityComplianceCheck": "false"
       },
-      "status": "pending"
+      "status": "success"
     },
     {
       "type": "upgrade",
@@ -136,7 +136,7 @@
         "passIntegrationTests": "false",
         "securityComplianceCheck": "false"
       },
-      "status": "pending"
+      "status": "success"
     },
     {
       "type": "upgrade",
@@ -154,7 +154,7 @@
         "passIntegrationTests": "false",
         "securityComplianceCheck": "false"
       },
-      "status": "pending"
+      "status": "success"
     },
     {
       "type": "upgrade",
@@ -172,7 +172,7 @@
         "passIntegrationTests": "false",
         "securityComplianceCheck": "false"
       },
-      "status": "pending"
+      "status": "success"
     },
     {
       "type": "upgrade",
@@ -190,7 +190,7 @@
         "passIntegrationTests": "false",
         "securityComplianceCheck": "false"
       },
-      "status": "pending"
+      "status": "success"
     },
     {
       "type": "upgrade",
