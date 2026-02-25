@@ -1,0 +1,17 @@
+# Visual Studio
+.vs/
+
+# Build outputs
+obj/
+bin/
+
+# User-specific files
+*.user
+*.suo
+
+# NuGet
+packages/
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
