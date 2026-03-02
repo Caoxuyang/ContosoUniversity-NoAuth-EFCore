@@ -1,0 +1,532 @@
+{
+  "reportConfigHash": "ad712c05",
+  "createdAtUtc": "2026-03-02T06:07:41.7810699Z",
+  "entries": [
+    {
+      "packageName": "Antlr",
+      "packageVersion": "3.4.1.9004",
+      "insightsName": "Antlr",
+      "insightsCurrentVersion": "3.4.1.9004",
+      "insightsNewVersion": "",
+      "insightsDescription": "Needs to be replaced with Replace with new package Antlr4=4.6.6",
+      "insightsIsCompatible": true,
+      "insightsProjects": [
+        "ContosoUniversity.csproj"
+      ]
+    },
+    {
+      "packageName": "bootstrap",
+      "packageVersion": "5.3.3",
+      "insightsName": "bootstrap",
+      "insightsCurrentVersion": "5.3.3",
+      "insightsNewVersion": "",
+      "insightsDescription": "",
+      "insightsIsCompatible": true,
+      "insightsProjects": []
+    },
+    {
+      "packageName": "jQuery",
+      "packageVersion": "3.7.1",
+      "insightsName": "jQuery",
+      "insightsCurrentVersion": "3.7.1",
+      "insightsNewVersion": "",
+      "insightsDescription": "",
+      "insightsIsCompatible": true,
+      "insightsProjects": []
+    },
+    {
+      "packageName": "jQuery.Validation",
+      "packageVersion": "1.21.0",
+      "insightsName": "jQuery.Validation",
+      "insightsCurrentVersion": "1.21.0",
+      "insightsNewVersion": "",
+      "insightsDescription": "",
+      "insightsIsCompatible": true,
+      "insightsProjects": []
+    },
+    {
+      "packageName": "Microsoft.AspNet.Mvc",
+      "packageVersion": "5.2.9",
+      "insightsName": "Microsoft.AspNet.Mvc",
+      "insightsCurrentVersion": "5.2.9",
+      "insightsNewVersion": "",
+      "insightsDescription": "NuGet package functionality is included with framework reference",
+      "insightsIsCompatible": true,
+      "insightsProjects": [
+        "ContosoUniversity.csproj"
+      ]
+    },
+    {
+      "packageName": "Microsoft.AspNet.Razor",
+      "packageVersion": "3.2.9",
+      "insightsName": "Microsoft.AspNet.Razor",
+      "insightsCurrentVersion": "3.2.9",
+      "insightsNewVersion": "",
+      "insightsDescription": "NuGet package functionality is included with framework reference",
+      "insightsIsCompatible": true,
+      "insightsProjects": [
+        "ContosoUniversity.csproj"
+      ]
+    },
+    {
+      "packageName": "Microsoft.AspNet.Web.Optimization",
+      "packageVersion": "1.1.3",
+      "insightsName": "Microsoft.AspNet.Web.Optimization",
+      "insightsCurrentVersion": "1.1.3",
+      "insightsNewVersion": "",
+      "insightsDescription": "NuGet package is incompatible",
+      "insightsIsCompatible": false,
+      "insightsProjects": [
+        "ContosoUniversity.csproj"
+      ]
+    },
+    {
+      "packageName": "Microsoft.AspNet.WebPages",
+      "packageVersion": "3.2.9",
+      "insightsName": "Microsoft.AspNet.WebPages",
+      "insightsCurrentVersion": "3.2.9",
+      "insightsNewVersion": "",
+      "insightsDescription": "NuGet package functionality is included with framework reference",
+      "insightsIsCompatible": true,
+      "insightsProjects": [
+        "ContosoUniversity.csproj"
+      ]
+    },
+    {
+      "packageName": "Microsoft.Bcl.AsyncInterfaces",
+      "packageVersion": "1.1.1",
+      "insightsName": "Microsoft.Bcl.AsyncInterfaces",
+      "insightsCurrentVersion": "1.1.1",
+      "insightsNewVersion": "10.0.3",
+      "insightsDescription": "NuGet package upgrade is recommended",
+      "insightsIsCompatible": true,
+      "insightsProjects": [
+        "ContosoUniversity.csproj"
+      ]
+    },
+    {
+      "packageName": "Microsoft.Bcl.HashCode",
+      "packageVersion": "1.1.1",
+      "insightsName": "Microsoft.Bcl.HashCode",
+      "insightsCurrentVersion": "1.1.1",
+      "insightsNewVersion": "6.0.0",
+      "insightsDescription": "NuGet package upgrade is recommended",
+      "insightsIsCompatible": true,
+      "insightsProjects": [
+        "ContosoUniversity.csproj"
+      ]
+    },
+    {
+      "packageName": "Microsoft.CodeDom.Providers.DotNetCompilerPlatform",
+      "packageVersion": "2.0.1",
+      "insightsName": "Microsoft.CodeDom.Providers.DotNetCompilerPlatform",
+      "insightsCurrentVersion": "2.0.1",
+      "insightsNewVersion": "",
+      "insightsDescription": "NuGet package functionality is included with framework reference",
+      "insightsIsCompatible": true,
+      "insightsProjects": [
+        "ContosoUniversity.csproj"
+      ]
+    },
+    {
+      "packageName": "Microsoft.Data.SqlClient",
+      "packageVersion": "2.1.4",
+      "insightsName": "Microsoft.Data.SqlClient",
+      "insightsCurrentVersion": "2.1.4",
+      "insightsNewVersion": "6.1.4",
+      "insightsDescription": "NuGet package contains security vulnerability",
+      "insightsIsCompatible": true,
+      "insightsProjects": [
+        "ContosoUniversity.csproj"
+      ]
+    },
+    {
+      "packageName": "Microsoft.Data.SqlClient.SNI.runtime",
+      "packageVersion": "2.1.1",
+      "insightsName": "Microsoft.Data.SqlClient.SNI.runtime",
+      "insightsCurrentVersion": "2.1.1",
+      "insightsNewVersion": "",
+      "insightsDescription": "",
+      "insightsIsCompatible": true,
+      "insightsProjects": []
+    },
+    {
+      "packageName": "Microsoft.Identity.Client",
+      "packageVersion": "4.21.1",
+      "insightsName": "Microsoft.Identity.Client",
+      "insightsCurrentVersion": "4.21.1",
+      "insightsNewVersion": "",
+      "insightsDescription": "NuGet package is deprecated",
+      "insightsIsCompatible": false,
+      "insightsProjects": [
+        "ContosoUniversity.csproj"
+      ]
+    },
+    {
+      "packageName": "Microsoft.EntityFrameworkCore",
+      "packageVersion": "3.1.32",
+      "insightsName": "Microsoft.EntityFrameworkCore",
+      "insightsCurrentVersion": "3.1.32",
+      "insightsNewVersion": "10.0.3",
+      "insightsDescription": "NuGet package upgrade is recommended",
+      "insightsIsCompatible": true,
+      "insightsProjects": [
+        "ContosoUniversity.csproj"
+      ]
+    },
+    {
+      "packageName": "Microsoft.EntityFrameworkCore.Abstractions",
+      "packageVersion": "3.1.32",
+      "insightsName": "Microsoft.EntityFrameworkCore.Abstractions",
+      "insightsCurrentVersion": "3.1.32",
+      "insightsNewVersion": "10.0.3",
+      "insightsDescription": "NuGet package upgrade is recommended",
+      "insightsIsCompatible": true,
+      "insightsProjects": [
+        "ContosoUniversity.csproj"
+      ]
+    },
+    {
+      "packageName": "Microsoft.EntityFrameworkCore.Analyzers",
+      "packageVersion": "3.1.32",
+      "insightsName": "Microsoft.EntityFrameworkCore.Analyzers",
+      "insightsCurrentVersion": "3.1.32",
+      "insightsNewVersion": "10.0.3",
+      "insightsDescription": "NuGet package upgrade is recommended",
+      "insightsIsCompatible": true,
+      "insightsProjects": [
+        "ContosoUniversity.csproj"
+      ]
+    },
+    {
+      "packageName": "Microsoft.EntityFrameworkCore.Relational",
+      "packageVersion": "3.1.32",
+      "insightsName": "Microsoft.EntityFrameworkCore.Relational",
+      "insightsCurrentVersion": "3.1.32",
+      "insightsNewVersion": "10.0.3",
+      "insightsDescription": "NuGet package upgrade is recommended",
+      "insightsIsCompatible": true,
+      "insightsProjects": [
+        "ContosoUniversity.csproj"
+      ]
+    },
+    {
+      "packageName": "Microsoft.EntityFrameworkCore.SqlServer",
+      "packageVersion": "3.1.32",
+      "insightsName": "Microsoft.EntityFrameworkCore.SqlServer",
+      "insightsCurrentVersion": "3.1.32",
+      "insightsNewVersion": "10.0.3",
+      "insightsDescription": "NuGet package upgrade is recommended",
+      "insightsIsCompatible": true,
+      "insightsProjects": [
+        "ContosoUniversity.csproj"
+      ]
+    },
+    {
+      "packageName": "Microsoft.EntityFrameworkCore.Tools",
+      "packageVersion": "3.1.32",
+      "insightsName": "Microsoft.EntityFrameworkCore.Tools",
+      "insightsCurrentVersion": "3.1.32",
+      "insightsNewVersion": "10.0.3",
+      "insightsDescription": "NuGet package upgrade is recommended",
+      "insightsIsCompatible": true,
+      "insightsProjects": [
+        "ContosoUniversity.csproj"
+      ]
+    },
+    {
+      "packageName": "Microsoft.Extensions.Caching.Abstractions",
+      "packageVersion": "3.1.32",
+      "insightsName": "Microsoft.Extensions.Caching.Abstractions",
+      "insightsCurrentVersion": "3.1.32",
+      "insightsNewVersion": "10.0.3",
+      "insightsDescription": "NuGet package upgrade is recommended",
+      "insightsIsCompatible": true,
+      "insightsProjects": [
+        "ContosoUniversity.csproj"
+      ]
+    },
+    {
+      "packageName": "Microsoft.Extensions.Caching.Memory",
+      "packageVersion": "3.1.32",
+      "insightsName": "Microsoft.Extensions.Caching.Memory",
+      "insightsCurrentVersion": "3.1.32",
+      "insightsNewVersion": "10.0.3",
+      "insightsDescription": "NuGet package upgrade is recommended",
+      "insightsIsCompatible": true,
+      "insightsProjects": [
+        "ContosoUniversity.csproj"
+      ]
+    },
+    {
+      "packageName": "Microsoft.Extensions.Configuration",
+      "packageVersion": "3.1.32",
+      "insightsName": "Microsoft.Extensions.Configuration",
+      "insightsCurrentVersion": "3.1.32",
+      "insightsNewVersion": "10.0.3",
+      "insightsDescription": "NuGet package upgrade is recommended",
+      "insightsIsCompatible": true,
+      "insightsProjects": [
+        "ContosoUniversity.csproj"
+      ]
+    },
+    {
+      "packageName": "Microsoft.Extensions.Configuration.Abstractions",
+      "packageVersion": "3.1.32",
+      "insightsName": "Microsoft.Extensions.Configuration.Abstractions",
+      "insightsCurrentVersion": "3.1.32",
+      "insightsNewVersion": "10.0.3",
+      "insightsDescription": "NuGet package upgrade is recommended",
+      "insightsIsCompatible": true,
+      "insightsProjects": [
+        "ContosoUniversity.csproj"
+      ]
+    },
+    {
+      "packageName": "Microsoft.Extensions.Configuration.Binder",
+      "packageVersion": "3.1.32",
+      "insightsName": "Microsoft.Extensions.Configuration.Binder",
+      "insightsCurrentVersion": "3.1.32",
+      "insightsNewVersion": "10.0.3",
+      "insightsDescription": "NuGet package upgrade is recommended",
+      "insightsIsCompatible": true,
+      "insightsProjects": [
+        "ContosoUniversity.csproj"
+      ]
+    },
+    {
+      "packageName": "Microsoft.Extensions.DependencyInjection",
+      "packageVersion": "3.1.32",
+      "insightsName": "Microsoft.Extensions.DependencyInjection",
+      "insightsCurrentVersion": "3.1.32",
+      "insightsNewVersion": "10.0.3",
+      "insightsDescription": "NuGet package upgrade is recommended",
+      "insightsIsCompatible": true,
+      "insightsProjects": [
+        "ContosoUniversity.csproj"
+      ]
+    },
+    {
+      "packageName": "Microsoft.Extensions.DependencyInjection.Abstractions",
+      "packageVersion": "3.1.32",
+      "insightsName": "Microsoft.Extensions.DependencyInjection.Abstractions",
+      "insightsCurrentVersion": "3.1.32",
+      "insightsNewVersion": "10.0.3",
+      "insightsDescription": "NuGet package upgrade is recommended",
+      "insightsIsCompatible": true,
+      "insightsProjects": [
+        "ContosoUniversity.csproj"
+      ]
+    },
+    {
+      "packageName": "Microsoft.Extensions.Logging",
+      "packageVersion": "3.1.32",
+      "insightsName": "Microsoft.Extensions.Logging",
+      "insightsCurrentVersion": "3.1.32",
+      "insightsNewVersion": "10.0.3",
+      "insightsDescription": "NuGet package upgrade is recommended",
+      "insightsIsCompatible": true,
+      "insightsProjects": [
+        "ContosoUniversity.csproj"
+      ]
+    },
+    {
+      "packageName": "Microsoft.Extensions.Logging.Abstractions",
+      "packageVersion": "3.1.32",
+      "insightsName": "Microsoft.Extensions.Logging.Abstractions",
+      "insightsCurrentVersion": "3.1.32",
+      "insightsNewVersion": "10.0.3",
+      "insightsDescription": "NuGet package upgrade is recommended",
+      "insightsIsCompatible": true,
+      "insightsProjects": [
+        "ContosoUniversity.csproj"
+      ]
+    },
+    {
+      "packageName": "Microsoft.Extensions.Options",
+      "packageVersion": "3.1.32",
+      "insightsName": "Microsoft.Extensions.Options",
+      "insightsCurrentVersion": "3.1.32",
+      "insightsNewVersion": "10.0.3",
+      "insightsDescription": "NuGet package upgrade is recommended",
+      "insightsIsCompatible": true,
+      "insightsProjects": [
+        "ContosoUniversity.csproj"
+      ]
+    },
+    {
+      "packageName": "Microsoft.Extensions.Primitives",
+      "packageVersion": "3.1.32",
+      "insightsName": "Microsoft.Extensions.Primitives",
+      "insightsCurrentVersion": "3.1.32",
+      "insightsNewVersion": "10.0.3",
+      "insightsDescription": "NuGet package upgrade is recommended",
+      "insightsIsCompatible": true,
+      "insightsProjects": [
+        "ContosoUniversity.csproj"
+      ]
+    },
+    {
+      "packageName": "Microsoft.jQuery.Unobtrusive.Validation",
+      "packageVersion": "4.0.0",
+      "insightsName": "Microsoft.jQuery.Unobtrusive.Validation",
+      "insightsCurrentVersion": "4.0.0",
+      "insightsNewVersion": "",
+      "insightsDescription": "",
+      "insightsIsCompatible": true,
+      "insightsProjects": []
+    },
+    {
+      "packageName": "Microsoft.Web.Infrastructure",
+      "packageVersion": "2.0.1",
+      "insightsName": "Microsoft.Web.Infrastructure",
+      "insightsCurrentVersion": "2.0.1",
+      "insightsNewVersion": "",
+      "insightsDescription": "NuGet package functionality is included with framework reference",
+      "insightsIsCompatible": true,
+      "insightsProjects": [
+        "ContosoUniversity.csproj"
+      ]
+    },
+    {
+      "packageName": "Modernizr",
+      "packageVersion": "2.6.2",
+      "insightsName": "Modernizr",
+      "insightsCurrentVersion": "2.6.2",
+      "insightsNewVersion": "",
+      "insightsDescription": "",
+      "insightsIsCompatible": true,
+      "insightsProjects": []
+    },
+    {
+      "packageName": "NETStandard.Library",
+      "packageVersion": "2.0.3",
+      "insightsName": "NETStandard.Library",
+      "insightsCurrentVersion": "2.0.3",
+      "insightsNewVersion": "",
+      "insightsDescription": "NuGet package functionality is included with framework reference",
+      "insightsIsCompatible": true,
+      "insightsProjects": [
+        "ContosoUniversity.csproj"
+      ]
+    },
+    {
+      "packageName": "Newtonsoft.Json",
+      "packageVersion": "13.0.3",
+      "insightsName": "Newtonsoft.Json",
+      "insightsCurrentVersion": "13.0.3",
+      "insightsNewVersion": "13.0.4",
+      "insightsDescription": "NuGet package upgrade is recommended",
+      "insightsIsCompatible": true,
+      "insightsProjects": [
+        "ContosoUniversity.csproj"
+      ]
+    },
+    {
+      "packageName": "System.Buffers",
+      "packageVersion": "4.5.1",
+      "insightsName": "System.Buffers",
+      "insightsCurrentVersion": "4.5.1",
+      "insightsNewVersion": "",
+      "insightsDescription": "NuGet package functionality is included with framework reference",
+      "insightsIsCompatible": true,
+      "insightsProjects": [
+        "ContosoUniversity.csproj"
+      ]
+    },
+    {
+      "packageName": "System.Collections.Immutable",
+      "packageVersion": "1.7.1",
+      "insightsName": "System.Collections.Immutable",
+      "insightsCurrentVersion": "1.7.1",
+      "insightsNewVersion": "10.0.3",
+      "insightsDescription": "NuGet package upgrade is recommended",
+      "insightsIsCompatible": true,
+      "insightsProjects": [
+        "ContosoUniversity.csproj"
+      ]
+    },
+    {
+      "packageName": "System.ComponentModel.Annotations",
+      "packageVersion": "4.7.0",
+      "insightsName": "System.ComponentModel.Annotations",
+      "insightsCurrentVersion": "4.7.0",
+      "insightsNewVersion": "",
+      "insightsDescription": "NuGet package functionality is included with framework reference",
+      "insightsIsCompatible": true,
+      "insightsProjects": [
+        "ContosoUniversity.csproj"
+      ]
+    },
+    {
+      "packageName": "System.Diagnostics.DiagnosticSource",
+      "packageVersion": "4.7.1",
+      "insightsName": "System.Diagnostics.DiagnosticSource",
+      "insightsCurrentVersion": "4.7.1",
+      "insightsNewVersion": "10.0.3",
+      "insightsDescription": "NuGet package upgrade is recommended",
+      "insightsIsCompatible": true,
+      "insightsProjects": [
+        "ContosoUniversity.csproj"
+      ]
+    },
+    {
+      "packageName": "System.Memory",
+      "packageVersion": "4.5.4",
+      "insightsName": "System.Memory",
+      "insightsCurrentVersion": "4.5.4",
+      "insightsNewVersion": "",
+      "insightsDescription": "NuGet package functionality is included with framework reference",
+      "insightsIsCompatible": true,
+      "insightsProjects": [
+        "ContosoUniversity.csproj"
+      ]
+    },
+    {
+      "packageName": "System.Numerics.Vectors",
+      "packageVersion": "4.5.0",
+      "insightsName": "System.Numerics.Vectors",
+      "insightsCurrentVersion": "4.5.0",
+      "insightsNewVersion": "",
+      "insightsDescription": "NuGet package functionality is included with framework reference",
+      "insightsIsCompatible": true,
+      "insightsProjects": [
+        "ContosoUniversity.csproj"
+      ]
+    },
+    {
+      "packageName": "System.Runtime.CompilerServices.Unsafe",
+      "packageVersion": "4.5.3",
+      "insightsName": "System.Runtime.CompilerServices.Unsafe",
+      "insightsCurrentVersion": "4.5.3",
+      "insightsNewVersion": "6.1.2",
+      "insightsDescription": "NuGet package upgrade is recommended",
+      "insightsIsCompatible": true,
+      "insightsProjects": [
+        "ContosoUniversity.csproj"
+      ]
+    },
+    {
+      "packageName": "System.Threading.Tasks.Extensions",
+      "packageVersion": "4.5.4",
+      "insightsName": "System.Threading.Tasks.Extensions",
+      "insightsCurrentVersion": "4.5.4",
+      "insightsNewVersion": "",
+      "insightsDescription": "NuGet package functionality is included with framework reference",
+      "insightsIsCompatible": true,
+      "insightsProjects": [
+        "ContosoUniversity.csproj"
+      ]
+    },
+    {
+      "packageName": "WebGrease",
+      "packageVersion": "1.5.2",
+      "insightsName": "WebGrease",
+      "insightsCurrentVersion": "1.5.2",
+      "insightsNewVersion": "",
+      "insightsDescription": "",
+      "insightsIsCompatible": true,
+      "insightsProjects": []
+    }
+  ]
+}
