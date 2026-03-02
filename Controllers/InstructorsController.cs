@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Net;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using ContosoUniversity.Data;
 using ContosoUniversity.Models;
 using ContosoUniversity.Models.SchoolViewModels;
@@ -12,7 +12,7 @@ namespace ContosoUniversity.Controllers
 {
     public class InstructorsController : BaseController
     {
-        // GET: Instructors - All roles can view
+        // GET: Instructors
         public ActionResult Index(int? id, int? courseID)
         {
             var viewModel = new InstructorIndexData();
@@ -40,17 +40,17 @@ namespace ContosoUniversity.Controllers
             return View(viewModel);
         }
 
-        // GET: Instructors/Details/5 - All roles can view details
+        // GET: Instructors/Details/5
         public ActionResult Details(int? id)
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return BadRequest();
             }
             Instructor instructor = db.Instructors.Find(id);
             if (instructor == null)
             {
-                return HttpNotFound();
+                return NotFound();
             }
             return View(instructor);
         }
@@ -67,7 +67,7 @@ namespace ContosoUniversity.Controllers
         // POST: Instructors/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "LastName,FirstMidName,HireDate,OfficeAssignment")] Instructor instructor, string[] selectedCourses)
+        public ActionResult Create([Bind("LastName,FirstMidName,HireDate,OfficeAssignment")] Instructor instructor, string[] selectedCourses)
         {
             if (selectedCourses != null)
             {
@@ -83,7 +83,6 @@ namespace ContosoUniversity.Controllers
                 db.Instructors.Add(instructor);
                 db.SaveChanges();
                 
-                // Send notification for instructor creation
                 SendEntityNotification("Instructor", instructor.ID.ToString(), EntityOperation.CREATE);
                 
                 return RedirectToAction("Index");
@@ -97,7 +96,7 @@ namespace ContosoUniversity.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return BadRequest();
             }
             Instructor instructor = db.Instructors
                 .Include(i => i.OfficeAssignment)
@@ -108,7 +107,7 @@ namespace ContosoUniversity.Controllers
             PopulateAssignedCourseData(instructor);
             if (instructor == null)
             {
-                return HttpNotFound();
+                return NotFound();
             }
             return View(instructor);
         }
@@ -133,11 +132,11 @@ namespace ContosoUniversity.Controllers
         // POST: Instructors/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int? id, string[] selectedCourses)
+        public async Task<ActionResult> Edit(int? id, string[] selectedCourses)
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return BadRequest();
             }
             var instructorToUpdate = db.Instructors
                .Include(i => i.OfficeAssignment)
@@ -146,8 +145,8 @@ namespace ContosoUniversity.Controllers
                .Where(i => i.ID == id)
                .Single();
 
-            if (TryUpdateModel(instructorToUpdate, "",
-               new string[] { "LastName", "FirstMidName", "HireDate", "OfficeAssignment" }))
+            if (await TryUpdateModelAsync<Instructor>(instructorToUpdate, "",
+               i => i.LastName, i => i.FirstMidName, i => i.HireDate, i => i.OfficeAssignment))
             {
                 try
                 {
@@ -160,7 +159,6 @@ namespace ContosoUniversity.Controllers
 
                     db.SaveChanges();
                     
-                    // Send notification for instructor update
                     SendEntityNotification("Instructor", instructorToUpdate.ID.ToString(), EntityOperation.UPDATE);
 
                     return RedirectToAction("Index");
@@ -211,17 +209,17 @@ namespace ContosoUniversity.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return BadRequest();
             }
             Instructor instructor = db.Instructors.Find(id);
             if (instructor == null)
             {
-                return HttpNotFound();
+                return NotFound();
             }
             return View(instructor);
         }
 
-        // POST: Instructors/Delete/5 - Only admins can delete instructors
+        // POST: Instructors/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
@@ -243,7 +241,6 @@ namespace ContosoUniversity.Controllers
 
             db.SaveChanges();
             
-            // Send notification for instructor deletion
             SendEntityNotification("Instructor", id.ToString(), EntityOperation.DELETE);
             
             return RedirectToAction("Index");
@@ -259,3 +256,4 @@ namespace ContosoUniversity.Controllers
         }
     }
 }
+
