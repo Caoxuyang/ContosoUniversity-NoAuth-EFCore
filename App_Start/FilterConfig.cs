@@ -1,14 +1,2 @@
-using System.Web.Mvc;
+// Filters are configured in Program.cs using AddControllersWithViews.
 
-namespace ContosoUniversity
-{
-    public class FilterConfig
-    {
-        public static void RegisterGlobalFilters(GlobalFilterCollection filters)
-        {
-            filters.Add(new HandleErrorAttribute());
-            // Remove the global authorization filter since we're implementing role-based authorization
-            // filters.Add(new AuthorizeAttribute()); // Require authentication for all controllers
-        }
-    }
-}

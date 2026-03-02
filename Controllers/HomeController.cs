@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using ContosoUniversity.Data;
 using ContosoUniversity.Models.SchoolViewModels;
 
@@ -45,3 +45,4 @@ namespace ContosoUniversity.Controllers
         }
     }
 }
+
