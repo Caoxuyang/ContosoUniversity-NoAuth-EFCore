@@ -209,8 +209,7 @@ jobs:
 
                 # Assign to Copilot
                 echo "🤖 Assigning to Copilot..."
-                gh api repos/${{ github.repository }}/issues/$ISSUE_NUM/assignees \
-                  -X POST -f "assignees[]=copilot-swe-agent[bot]" 2>/dev/null || \
+                gh issue edit $ISSUE_NUM --add-assignee Copilot 2>/dev/null || \
                   echo "   (Enable Copilot Coding Agent to auto-assign)"
               fi
             fi
