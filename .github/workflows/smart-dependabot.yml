@@ -207,9 +207,18 @@ jobs:
                 ISSUE_NUM=$(echo "$ISSUE_URL" | grep -oP '\d+$')
                 echo "✅ Created #$ISSUE_NUM"
 
-                # Assign to Copilot
+                # Assign to Copilot using GraphQL with the Copilot bot node ID
                 echo "🤖 Assigning to Copilot..."
-                gh issue edit $ISSUE_NUM --add-assignee Copilot 2>/dev/null || \
+                ISSUE_NODE_ID=$(gh api repos/${{ github.repository }}/issues/$ISSUE_NUM --jq '.node_id')
+                # BOT_kgDOC9w8XQ is the Copilot Coding Agent's node ID
+                gh api graphql \
+                  -H "GraphQL-Features: issues_copilot_assignment_api_support" \
+                  -f query='mutation($issueId: ID!) {
+                    addAssigneesToAssignable(input: {assignableId: $issueId, assigneeIds: ["BOT_kgDOC9w8XQ"]}) {
+                      clientMutationId
+                    }
+                  }' \
+                  -f issueId="$ISSUE_NODE_ID" 2>/dev/null && echo "✅ Copilot assigned" || \
                   echo "   (Enable Copilot Coding Agent to auto-assign)"
               fi
             fi
