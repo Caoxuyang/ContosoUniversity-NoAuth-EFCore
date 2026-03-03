@@ -1,0 +1,214 @@
+# Smart Dependabot - .NET Focused
+# Scans for Dependabot alerts + .NET EOL, assigns HIGH/CRITICAL to Copilot
+
+name: Smart Dependabot
+
+on:
+  schedule:
+    - cron: '0 2 * * *'  # Nightly at 2 AM UTC
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run (no issues/assignments)'
+        type: boolean
+        default: false
+      min_risk_score:
+        description: 'Min risk score (6.0 = HIGH+)'
+        type: string
+        default: '6.0'
+
+env:
+  MIN_RISK: ${{ inputs.min_risk_score || '6.0' }}
+  DRY_RUN: ${{ inputs.dry_run || 'false' }}
+
+jobs:
+  smart-dependabot:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+      security-events: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Scan & Score
+        id: scan
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "🔍 Smart Dependabot - .NET Scan"
+          echo "================================"
+
+          # --- 1. Fetch Dependabot Alerts ---
+          echo "📡 Fetching Dependabot alerts..."
+          ALERTS=$(gh api repos/${{ github.repository }}/dependabot/alerts 2>/dev/null || echo '[]')
+
+          if echo "$ALERTS" | grep -q "Dependabot alerts are disabled"; then
+            echo "⚠️  Dependabot not enabled - skipping"
+            ALERTS='[]'
+          fi
+
+          # Filter to open NuGet alerts
+          NUGET_ALERTS=$(echo "$ALERTS" | jq '[.[] | select(.state=="open") | select(.security_vulnerability.package.ecosystem=="nuget") | {
+            source: "dependabot",
+            name: .security_vulnerability.package.name,
+            severity: .security_advisory.severity,
+            summary: .security_advisory.summary,
+            cve: .security_advisory.cve_id,
+            cvss: (.security_advisory.cvss.score // 5),
+            patched: .security_vulnerability.first_patched_version.identifier,
+            risk_type: "vulnerability"
+          }]')
+
+          echo "Found $(echo $NUGET_ALERTS | jq 'length') NuGet alerts"
+
+          # --- 2. Scan .NET EOL ---
+          echo ""
+          echo "🔍 Scanning .NET versions..."
+          EOL_FINDINGS='[]'
+
+          # Check .NET Framework in csproj
+          for csproj in $(find . -name "*.csproj" 2>/dev/null); do
+            if grep -q "TargetFrameworkVersion" "$csproj"; then
+              VER=$(grep -oP '(?<=<TargetFrameworkVersion>)[^<]+' "$csproj" | head -1)
+              echo "  Found .NET Framework $VER in $csproj"
+              EOL_FINDINGS=$(echo "$EOL_FINDINGS" | jq --arg v "$VER" '. + [{
+                source: "eol_scan",
+                name: ".NET Framework",
+                version: $v,
+                severity: "medium",
+                summary: ".NET Framework is in maintenance mode. Consider migrating to .NET 8+",
+                risk_type: "modernization"
+              }]')
+            fi
+          done
+
+          # Check EF Core in packages.config
+          if [ -f "packages.config" ]; then
+            EF_VER=$(grep -oP 'id="Microsoft.EntityFrameworkCore" version="\K[^"]+' packages.config || echo "")
+            if [ ! -z "$EF_VER" ]; then
+              echo "  Found EF Core $EF_VER"
+              if [[ "$EF_VER" == 3.* ]]; then
+                EOL_FINDINGS=$(echo "$EOL_FINDINGS" | jq --arg v "$EF_VER" '. + [{
+                  source: "eol_scan",
+                  name: "Entity Framework Core",
+                  version: $v,
+                  severity: "critical",
+                  summary: "EF Core 3.1 reached EOL December 2022. Upgrade to EF Core 8+",
+                  risk_type: "eol"
+                }]')
+              fi
+            fi
+          fi
+
+          echo "Found $(echo $EOL_FINDINGS | jq 'length') EOL findings"
+
+          # --- 3. Calculate Risk Scores ---
+          echo ""
+          echo "📊 Calculating risk scores..."
+
+          ALL_FINDINGS=$(echo "$NUGET_ALERTS $EOL_FINDINGS" | jq -s 'add // []')
+
+          SCORED=$(echo "$ALL_FINDINGS" | jq '
+            def severity_score: {"critical":10,"high":7,"medium":4,"low":1}[.] // 4;
+            def impact_score: if .risk_type == "eol" then 10 elif .risk_type == "modernization" then 4 else (.cvss // 5) end;
+            def exploit_score: if .cve then 7 elif .risk_type == "eol" then 8 else 3 end;
+
+            [.[] | . + {
+              risk_score: (((.severity | severity_score) * 0.4) + (impact_score * 0.35) + (exploit_score * 0.25) | . * 100 | floor / 100),
+              risk_level: (
+                (((.severity | severity_score) * 0.4) + (impact_score * 0.35) + (exploit_score * 0.25)) as $s |
+                if $s >= 8 then "CRITICAL" elif $s >= 6 then "HIGH" elif $s >= 4 then "MEDIUM" else "LOW" end
+              )
+            }] | sort_by(-.risk_score)
+          ')
+
+          echo "$SCORED" | jq -r '.[] | "  [\(.risk_level)] \(.risk_score) - \(.name): \(.summary | .[0:60])..."'
+
+          # Filter high risk
+          HIGH_RISK=$(echo "$SCORED" | jq --arg min "$MIN_RISK" '[.[] | select(.risk_score >= ($min | tonumber))]')
+          COUNT=$(echo "$HIGH_RISK" | jq 'length')
+
+          echo ""
+          echo "✅ Found $COUNT findings >= $MIN_RISK risk score"
+
+          # Save for next step
+          echo "findings<<EOF" >> $GITHUB_OUTPUT
+          echo "$HIGH_RISK" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          echo "count=$COUNT" >> $GITHUB_OUTPUT
+
+      - name: Create Issues & Assign Copilot
+        if: steps.scan.outputs.count > 0
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "📝 Creating issues for high-risk findings..."
+
+          echo '${{ steps.scan.outputs.findings }}' | jq -c '.[]' | while read -r finding; do
+            NAME=$(echo "$finding" | jq -r '.name')
+            SUMMARY=$(echo "$finding" | jq -r '.summary')
+            LEVEL=$(echo "$finding" | jq -r '.risk_level')
+            SCORE=$(echo "$finding" | jq -r '.risk_score')
+            VERSION=$(echo "$finding" | jq -r '.version // "N/A"')
+            PATCHED=$(echo "$finding" | jq -r '.patched // "See docs"')
+            CVE=$(echo "$finding" | jq -r '.cve // "N/A"')
+
+            TITLE="[Smart Dependabot] [$LEVEL] $NAME"
+
+            BODY="## 🤖 Smart Dependabot Alert
+
+          **Risk:** $LEVEL ($SCORE/10)
+          **Package:** $NAME
+          **Version:** $VERSION
+          **CVE:** $CVE
+
+          ### Issue
+          $SUMMARY
+
+          ### Fix
+          ${PATCHED:+Upgrade to: **$PATCHED**}
+
+          ### Copilot Instructions
+          1. Update $NAME to a supported version
+          2. Fix any breaking changes
+          3. Ensure build passes
+
+          ---
+          *Auto-generated by Smart Dependabot*"
+
+            if [ "$DRY_RUN" == "true" ]; then
+              echo "🔸 [DRY RUN] Would create: $TITLE"
+            else
+              # Check existing
+              EXISTING=$(gh issue list --search "in:title \"$NAME\" label:smart-dependabot" --json number --jq '.[0].number // empty')
+
+              if [ ! -z "$EXISTING" ]; then
+                echo "⏭️  Issue exists: #$EXISTING"
+              else
+                ISSUE_URL=$(gh issue create --title "$TITLE" --body "$BODY" --label "smart-dependabot,security,$LEVEL")
+                ISSUE_NUM=$(echo "$ISSUE_URL" | grep -oP '\d+$')
+                echo "✅ Created #$ISSUE_NUM"
+
+                # Assign to Copilot
+                echo "🤖 Assigning to Copilot..."
+                gh api repos/${{ github.repository }}/issues/$ISSUE_NUM/assignees \
+                  -X POST -f "assignees[]=copilot-swe-agent[bot]" 2>/dev/null || \
+                  echo "   (Enable Copilot Coding Agent to auto-assign)"
+              fi
+            fi
+          done
+
+      - name: Summary
+        run: |
+          echo "## 📊 Smart Dependabot Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**High-Risk Findings:** ${{ steps.scan.outputs.count }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Min Score:** ${{ env.MIN_RISK }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Dry Run:** ${{ env.DRY_RUN }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Findings" >> $GITHUB_STEP_SUMMARY
+          echo '```json' >> $GITHUB_STEP_SUMMARY
+          echo '${{ steps.scan.outputs.findings }}' | head -100 >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
