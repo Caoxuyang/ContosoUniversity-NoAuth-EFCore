@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
+using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
@@ -18,9 +18,7 @@ namespace ContosoUniversity.Controllers
             var viewModel = new InstructorIndexData();
             viewModel.Instructors = db.Instructors
                 .Include(i => i.OfficeAssignment)
-                .Include(i => i.CourseAssignments)
-                    .ThenInclude(c => c.Course)
-                        .ThenInclude(d => d.Department)
+                .Include(i => i.CourseAssignments.Select(c => c.Course.Department))
                 .OrderBy(i => i.LastName);
 
             if (id != null)
@@ -101,8 +99,7 @@ namespace ContosoUniversity.Controllers
             }
             Instructor instructor = db.Instructors
                 .Include(i => i.OfficeAssignment)
-                .Include(i => i.CourseAssignments)
-                    .ThenInclude(c => c.Course)
+                .Include(i => i.CourseAssignments.Select(c => c.Course))
                 .Where(i => i.ID == id)
                 .Single();
             PopulateAssignedCourseData(instructor);
@@ -141,8 +138,7 @@ namespace ContosoUniversity.Controllers
             }
             var instructorToUpdate = db.Instructors
                .Include(i => i.OfficeAssignment)
-               .Include(i => i.CourseAssignments)
-                   .ThenInclude(c => c.Course)
+               .Include(i => i.CourseAssignments.Select(c => c.Course))
                .Where(i => i.ID == id)
                .Single();
 
