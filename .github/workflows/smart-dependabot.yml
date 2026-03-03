@@ -28,7 +28,6 @@ jobs:
       contents: read
       issues: write
       security-events: read
-      copilot: write
 
     steps:
       - uses: actions/checkout@v4
