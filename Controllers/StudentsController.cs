@@ -1,5 +1,5 @@
 using System;
-using Microsoft.EntityFrameworkCore;
+using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
@@ -67,8 +67,7 @@ namespace ContosoUniversity.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Student student = db.Students
-                .Include(s => s.Enrollments)
-                    .ThenInclude(e => e.Course)
+                .Include(s => s.Enrollments.Select(e => e.Course))
                 .Where(s => s.ID == id).Single();
             if (student == null)
             {

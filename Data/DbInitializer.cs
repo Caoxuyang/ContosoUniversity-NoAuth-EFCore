@@ -9,7 +9,7 @@ namespace ContosoUniversity.Data
         public static void Initialize(SchoolContext context)
         {
             // Ensure the database is created
-            context.Database.EnsureCreated();
+            context.Database.CreateIfNotExists();
 
             // Look for any students.
             if (context.Students.Any())
