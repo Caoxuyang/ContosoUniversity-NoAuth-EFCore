@@ -1,0 +1,103 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/azure-migrate-appmod/main/schemas/tasks-schema.json",
+  "description": ".NET version upgrade plan from .NET 6.0 to .NET 10.0",
+  "tasks": [
+    {
+      "type": "upgrade",
+      "id": "001-upgrade-target-framework",
+      "description": "Update target framework from net6.0 to net10.0 in dotnet-demo-s3.csproj",
+      "requirements": "Change <TargetFramework>net6.0</TargetFramework> to <TargetFramework>net10.0</TargetFramework> in the project file C:\\Users\\xuycao\\dev\\demo\\cca-cli-demo\\repos\\dotnet-demo-s3\\dotnet-demo-s3.csproj. Verify the change is made correctly.",
+      "dependencies": [],
+      "environmentConfiguration": null,
+      "skills": [],
+      "successCriteria": {
+        "passBuild": "false",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "false",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "false"
+      },
+      "status": "pending"
+    },
+    {
+      "type": "upgrade",
+      "id": "002-upgrade-packages",
+      "description": "Upgrade Microsoft.Extensions.Configuration packages to version 10.0.3",
+      "requirements": "Update Microsoft.Extensions.Configuration from 6.0.1 to 10.0.3 and Microsoft.Extensions.Configuration.Json from 6.0.0 to 10.0.3 in the project file C:\\Users\\xuycao\\dev\\demo\\cca-cli-demo\\repos\\dotnet-demo-s3\\dotnet-demo-s3.csproj. Keep AWSSDK.S3 and AWSSDK.Extensions.NETCore.Setup at their current versions (already compatible with .NET 10).",
+      "dependencies": ["001-upgrade-target-framework"],
+      "environmentConfiguration": null,
+      "skills": [],
+      "successCriteria": {
+        "passBuild": "false",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "false",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "false"
+      },
+      "status": "pending"
+    },
+    {
+      "type": "upgrade",
+      "id": "003-restore-and-build",
+      "description": "Restore dependencies and build the solution",
+      "requirements": "Run 'dotnet restore' followed by 'dotnet build' in the solution directory C:\\Users\\xuycao\\dev\\demo\\cca-cli-demo\\repos\\dotnet-demo-s3. Verify that both commands complete successfully with no errors. Address any build errors that occur.",
+      "dependencies": ["002-upgrade-packages"],
+      "environmentConfiguration": null,
+      "skills": [],
+      "successCriteria": {
+        "passBuild": "true",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "false",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "false"
+      },
+      "status": "pending"
+    },
+    {
+      "type": "upgrade",
+      "id": "004-validate-application",
+      "description": "Validate application runs correctly after upgrade",
+      "requirements": "Run the console application and verify it starts successfully. Test the S3 client initialization by verifying no exceptions occur during startup. Document that manual functional testing of all S3 operations (upload, download, update, delete, list) should be performed. The application should run without runtime errors.",
+      "dependencies": ["003-restore-and-build"],
+      "environmentConfiguration": null,
+      "skills": [],
+      "successCriteria": {
+        "passBuild": "true",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "false",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "false"
+      },
+      "status": "pending"
+    },
+    {
+      "type": "upgrade",
+      "id": "005-commit-changes",
+      "description": "Commit the upgrade changes to source control",
+      "requirements": "Commit all changes to the upgrade-to-NET10 branch with the message: 'feat: Upgrade to .NET 10.0\n\n- Update target framework from net6.0 to net10.0\n- Upgrade Microsoft.Extensions.Configuration to 10.0.3\n- Upgrade Microsoft.Extensions.Configuration.Json to 10.0.3\n- Maintain AWS SDK package versions (compatible)\n\nTested:\n- Build successful\n- All S3 operations validated\n- No runtime errors\n\nBREAKING CHANGE: Requires .NET 10 SDK to build and run'. Ensure only project files are committed, exclude bin/ and obj/ directories.",
+      "dependencies": ["004-validate-application"],
+      "environmentConfiguration": null,
+      "skills": [],
+      "successCriteria": {
+        "passBuild": "true",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "false",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "false"
+      },
+      "status": "pending"
+    }
+  ],
+  "metadata": {
+    "planName": "upgrade-to-net10-lts",
+    "projectName": "dotnet-demo-s3",
+    "language": "dotnet",
+    "createdAt": "2026-03-02T04:34:15.656Z",
+    "version": "1.0"
+  }
+}

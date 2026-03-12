@@ -1,0 +1,49 @@
+{
+  "$schema": "tasks-schema.json",
+  "description": ".NET version upgrade plan from .NET 6.0 to .NET 10.0",
+  "tasks": [
+    {
+      "type": "upgrade",
+      "id": "001-upgrade-target-framework-and-packages",
+      "description": "Upgrade dotnet-demo-s3 project from .NET 6.0 to .NET 10.0 with package updates",
+      "requirements": "Update TargetFramework from net6.0 to net10.0 in dotnet-demo-s3.csproj. Upgrade Microsoft.Extensions.Configuration from 6.0.1 to 10.0.3. Upgrade Microsoft.Extensions.Configuration.Json from 6.0.0 to 10.0.3. Leave AWSSDK.S3 (3.7.300.2) and AWSSDK.Extensions.NETCore.Setup (3.7.7) unchanged as they are compatible. Restore dependencies with dotnet restore. Build project with dotnet build --configuration Release. Verify no compilation errors or warnings.",
+      "dependencies": [],
+      "environmentConfiguration": null,
+      "skills": [],
+      "successCriteria": {
+        "passBuild": "true",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "false",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "false"
+      },
+      "status": "pending"
+    },
+    {
+      "type": "upgrade",
+      "id": "002-validation-and-testing",
+      "description": "Validate runtime functionality and manual testing of dotnet-demo-s3 application",
+      "requirements": "Execute application with dotnet run --configuration Release to verify runtime functionality. Verify configuration loading from appsettings.json works correctly. Test AWS S3 connectivity and operations if credentials are available. Verify error handling functions correctly. Confirm no runtime exceptions occur during smoke testing. Document any issues discovered during testing.",
+      "dependencies": ["001-upgrade-target-framework-and-packages"],
+      "environmentConfiguration": null,
+      "skills": [],
+      "successCriteria": {
+        "passBuild": "true",
+        "generateNewUnitTests": "false",
+        "generateNewIntegrationTests": "false",
+        "passUnitTests": "false",
+        "passIntegrationTests": "false",
+        "securityComplianceCheck": "false"
+      },
+      "status": "pending"
+    }
+  ],
+  "metadata": {
+    "planName": "upgrade-to-lts-20260302044717",
+    "projectName": "dotnet-demo-s3",
+    "language": "dotnet",
+    "createdAt": "2026-03-02T04:47:17.000Z",
+    "version": "1.0"
+  }
+}
